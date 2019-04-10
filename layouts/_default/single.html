@@ -43,10 +43,16 @@
                     </div>
 
                     <!-- Post Featured Image -->
-                    {{with .Params.image}}
-                        <img class="featured-image img-fluid" src="{{ . | urlize | relURL }}" alt="thumbnail for this post">
+                    {{if ne $.Params.noFeaturedImage true }}
+                    {{- $images := $.Resources.ByType "image" -}}
+                    {{- $featured := $images.GetMatch "*feature*" -}}
+                    {{- $featured := cond (ne $featured nil) $featured ($images.GetMatch "{*cover*,*thumbnail*}") -}}
+                    {{- with $featured -}}
+                        <img class="featured-image img-fluid" src="{{ $featured.Permalink }}" alt="thumbnail for this post">
+                    {{end}}
                     {{end}}
                     <!-- End Featured Image -->
+
                     
                     <!-- Post Content -->
                     <div class="article-post">

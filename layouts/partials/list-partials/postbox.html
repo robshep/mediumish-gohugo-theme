@@ -3,8 +3,11 @@
     <div class="card h-100">
         <div class="maxthumb">
             <a href="{{ .URL }}">
-                {{with .Params.image}}
-                    <img class="img-fluid" src="{{ . | urlize | relURL }}" alt="A thumbnail image">
+                {{- $images := $.Resources.ByType "image" -}}
+                {{- $featured := $images.GetMatch "*feature*" -}}
+                {{- $featured := cond (ne $featured nil) $featured ($images.GetMatch "{*cover*,*thumbnail*}") -}}
+                {{- with $featured -}}
+                    <img class="img-fluid" src="{{ $featured.Permalink }}" alt="A thumbnail image">
                 {{end}}                
             </a>
         </div>
